@@ -24,7 +24,7 @@
 
         <br>
 
-        <button type="submit">Submit task</button>
+        <button type="submit">Submit </button>
 
     </form:form>
 
