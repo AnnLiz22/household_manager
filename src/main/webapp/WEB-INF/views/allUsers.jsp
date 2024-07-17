@@ -1,6 +1,8 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <%@ include file="/header.jsp" %>
 
 <html>
@@ -26,6 +28,26 @@
         <tr>
             <td><c:out value="${user.name}"/></td>
             <td><c:out value="${user.role}"/></td>
+
+            <td class="px-4 py-3">
+                <form:form action="/users/delete/${user.id}" method="post" cssStyle="display:inline;"
+                           onClick="return confirm('Are you sure you want to delete ${user.name} from your household?')">
+                    <input type="submit" value="Delete"/>
+                </form:form>
+            </td>
+
+            <td class="px-4 py-3">
+                <form:form action="/users/show/${user.id}" method="post" cssStyle="display:inline;">
+                    <input type="submit" value="Show details"/>
+                </form:form>
+            </td>
+
+
+            <td class="px-4 py-3">
+                    <form:form action="${pageContext.request.contextPath}/assignTask" method="get" cssStyle="display:inline;">
+                <input type="submit" value="Assign task"/>
+                        </form:form>
+
         </tr>
     </c:forEach>
     </tbody>
