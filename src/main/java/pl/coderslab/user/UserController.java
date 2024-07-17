@@ -21,13 +21,13 @@ public class UserController {
     @GetMapping
     public String showUserForm(Model model) {
         model.addAttribute("user", new User());
-        return "/addUserForm";
+        return "/addUser";
     }
 
     @PostMapping
     public String addUserForm(@ModelAttribute User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "/addUserForm";
+            return "/addUser";
         }
         if (user.getId() == null) {
             userRepository.save(user);
@@ -50,8 +50,8 @@ public class UserController {
         Optional <User> optionalUser = userRepository.findById(id);
         if(optionalUser.isPresent()){
             User existingUser = optionalUser.get();
-            existingUser.setLogin(user.getLogin());
-            existingUser.setHouseholdMemberName(user.getHouseholdMemberName());
+            existingUser.setName(user.getName());
+            existingUser.setRole(user.getName());
             userRepository.save(existingUser);
             model.addAttribute("user", existingUser);
             log.info("user {} updated", optionalUser);

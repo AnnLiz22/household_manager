@@ -10,14 +10,13 @@ import pl.coderslab.user_task_comment.UserTaskComment;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@Table
+@Table(name = "user_tasks")
 public class UserTask implements Serializable {
 
     @Id
@@ -30,7 +29,6 @@ public class UserTask implements Serializable {
     @ManyToOne
     private Task task;
 
-    private Date deadline;
     private boolean isDone;
 
     @OneToMany(mappedBy = "userTask", cascade = CascadeType.ALL)

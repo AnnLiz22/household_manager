@@ -14,13 +14,13 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Table(name = "user")
+@Table(name = "users")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String login;
-    private String householdMemberName;
+    private String name;
+    private String role;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
