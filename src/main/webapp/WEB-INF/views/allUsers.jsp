@@ -30,6 +30,12 @@
             <td><c:out value="${user.role}"/></td>
 
             <td class="px-4 py-3">
+                <form:form action="/users/edit/${user.id}" method="post" cssStyle="display:inline;">
+                    <input type="submit" value="Edit"/>
+                </form:form>
+            </td>
+
+            <td class="px-4 py-3">
                 <form:form action="/users/delete/${user.id}" method="post" cssStyle="display:inline;"
                            onClick="return confirm('Are you sure you want to delete ${user.name} from your household?')">
                     <input type="submit" value="Delete"/>
