@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/tasks")
@@ -31,19 +32,28 @@ public class TaskController {
         return "redirect:tasks/all";
     }
 
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-    public String showEditTask(@PathVariable Long id, Model model){
-        model.addAttribute("task", taskRepository.findById(id));
+    @GetMapping("/edit/{id}")
+    public String showEditTaskForm(@PathVariable Long id, Model model) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        if (optionalTask.isPresent()) {
+            model.addAttribute("task", optionalTask.get());
+        }
         return "editTask";
     }
 
     @PostMapping("/edit/{id}")
-    public String updateTask(@Valid Task task, BindingResult bindingResult ){
-        if(bindingResult.hasErrors()){
-            return "editTask";
+    public String editTask(@PathVariable Long id, @ModelAttribute Task task, Model model) {
+
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        if (optionalTask.isPresent()) {
+            Task existingTask = optionalTask.get();
+            existingTask.setTaskName(task.getTaskName());
+            existingTask.setTaskDescription(task.getTaskDescription());
+            existingTask.setCreatedOn(task.getCreatedOn());
+            taskRepository.save(existingTask);
+            model.addAttribute("task", existingTask);
         }
-        taskRepository.save(task);
-        return "redirect:tasks/all";
+        return "editTask";
     }
 
     @GetMapping("delete/{id}")
@@ -52,12 +62,11 @@ public class TaskController {
         return "redirect:tasks/all";
     }
 
-    @GetMapping("/show/{id}")
-    public String showTask(@PathVariable Long id, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return "allTasks";
-        }
-        taskRepository.findById(id);
+    @GetMapping("/showTask/{id}")
+    public String showTask(@PathVariable Long id, Model model) {
+
+        Optional<Task> task = taskRepository.findById(id);
+        model.addAttribute(task.get());
         return "showTask";
     }
 
