@@ -62,7 +62,7 @@ public class TaskController {
         return "redirect:tasks/all";
     }
 
-    @GetMapping("/showTask/{id}")
+    @GetMapping("/show/{id}")
     public String showTask(@PathVariable Long id, Model model) {
 
         Optional<Task> task = taskRepository.findById(id);
