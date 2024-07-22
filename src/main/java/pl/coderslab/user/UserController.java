@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,20 +26,21 @@ public class UserController {
     }
 
     @PostMapping
-    public String addUserForm(@ModelAttribute User user, BindingResult bindingResult) {
+    public String addUserForm(@Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/addUser";
         }
         if (user.getId() == null) {
             userRepository.save(user);
             log.info("user {} added to the database", user);
-        } return "redirect:users/all";
+        }
+        return "redirect:users/all";
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditUserForm(@PathVariable Long id, Model model){
-        Optional <User> optionalUser = userRepository.findById(id);
-        if(optionalUser.isPresent()){
+    public String showEditUserForm(@PathVariable Long id, Model model) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
             model.addAttribute("user", optionalUser.get());
             log.info("user {} is present", optionalUser);
         }
@@ -46,41 +48,35 @@ public class UserController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editUserForm(@PathVariable Long id, @ModelAttribute User user, Model model){
-        Optional <User> optionalUser = userRepository.findById(id);
-        if(optionalUser.isPresent()){
-            User existingUser = optionalUser.get();
-            existingUser.setName(user.getName());
-            existingUser.setRole(user.getName());
-            userRepository.save(existingUser);
-            model.addAttribute("user", existingUser);
-            log.info("user {} updated", optionalUser);
-        }
+    public String editUserForm(@Valid User user) {
+
+        userRepository.save(user);
+        log.info("user {} updated", user);
         return "editUser";
     }
 
     @PostMapping("/delete")
-    public String deleteUser(User user){
+    public String deleteUser(User user) {
         userRepository.deleteById(user.getId());
 
         return "redirect:users/all";
     }
 
     @GetMapping("/all")
-    public String getAllHouseholdMembers(){
+    public String getAllHouseholdMembers() {
         return "allUsers";
     }
 
 
     @GetMapping("/show/{id}")
-    public String showUser(@PathVariable Long id, Model model){
+    public String showUser(@PathVariable Long id, Model model) {
         Optional<User> user = userRepository.findById(id);
         model.addAttribute(user.get());
         return "showUser";
     }
 
     @ModelAttribute("users")
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
