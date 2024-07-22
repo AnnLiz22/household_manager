@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table
+@Table(name="user_task_comments")
 @Getter
 @Setter
 @ToString

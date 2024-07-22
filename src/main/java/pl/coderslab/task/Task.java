@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Table(name = "task")
+@Table(name = "tasks")
 public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

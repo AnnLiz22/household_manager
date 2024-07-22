@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Table(name = "comment")
+@Table(name = "comments")
 public class Comment implements Serializable {
 
     @Id
