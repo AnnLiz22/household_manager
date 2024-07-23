@@ -25,16 +25,14 @@
         <form:input path="taskDescription" id="taskDescription"/>
 
         <label for="category">Task Category:</label>
-        <form:select path="category" id="category">
-
-            <form:options items="${task.category.id} " />
+        <form:select path="category.id" id="category">
+            <form:option value="" label="--kategoria--"/>
+            <form:options items="${categories}" itemValue="id" itemLabel="category"/>
         </form:select>
-
 
         <label for="dueDate">Task Due Date:</label>
         <form:input id="dueDate" path="dueDate" required="true"/>
         <br>
-
 
         <button type="submit">Submit task</button>
 
