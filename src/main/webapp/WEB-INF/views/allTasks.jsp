@@ -33,6 +33,7 @@
                     <td>${task.taskName}</td>
                     <td>${task.taskDescription}</td>
                     <td>${task.createdOn}</td>
+                    <td>${task.category}</td>
                     <td>${task.dueDate}</td>
 
                     <td class="px-4 py-3">

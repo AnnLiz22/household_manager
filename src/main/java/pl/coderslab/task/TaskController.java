@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.category.Category;
+import pl.coderslab.category.CategoryRepository;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class TaskController {
 
     private final TaskRepository taskRepository;
+    private final CategoryRepository categoryRepository;
 
     @GetMapping
     public String showAddTask(Model model) {
         model.addAttribute("task", new Task());
+        model.addAttribute("category", categoryRepository.findAll());
         return "addTask";
     }
 
@@ -81,4 +85,8 @@ public class TaskController {
        return taskRepository.findAll();
     }
 
+    @ModelAttribute("categories")
+    public List<Category> getAllCategories(){
+        return categoryRepository.findAll();
+    }
 }
