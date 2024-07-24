@@ -20,6 +20,7 @@
             a new task :-) </h5>
             <h5> >>> Let's  do it together. <a href="${pageContext.request.contextPath}/users">add </a>
                 a family member :-) </h5>
+           <h5> >>> If you want to assign a task to a household member, you can do it <a href="${pageContext.request.contextPath}/assignTask">here </a>. </h5>
 
         </ul>
 
@@ -27,5 +28,8 @@
 
     </div>
 </div>
+
+
+
 </body>
 </html>

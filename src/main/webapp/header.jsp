@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
@@ -11,6 +10,7 @@
         <a href="${pageContext.request.contextPath}/users/all">Show all members</a><br>
         <a href="${pageContext.request.contextPath}/tasks">Add new task </a><br>
         <a href="${pageContext.request.contextPath}/tasks/all">Show all tasks </a><br>
+        <a href="${pageContext.request.contextPath}/assignTask">Assign task </a> <br>
 
     </nav>
 
