@@ -33,7 +33,7 @@
                     <td>${task.taskName}</td>
                     <td>${task.taskDescription}</td>
                     <td>${task.createdOn}</td>
-                    <td>${task.category}</td>
+                    <td>${task.category.category}</td>
                     <td>${task.dueDate}</td>
 
                     <td class="px-4 py-3">
@@ -51,7 +51,7 @@
                     </td>
 
                     <td class="px-4 py-3">
-                        <form:form action="/tasks/showTask/${task.id}" method="post" cssStyle="display:inline;">
+                        <form:form action="/tasks/show/${task.id}" method="get" cssStyle="display:inline;">
                             <input type="submit" value="Show task details"/>
                         </form:form>
                     </td>
