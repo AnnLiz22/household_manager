@@ -46,32 +46,29 @@ public class TaskController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editTask(@PathVariable Long id, @ModelAttribute Task task, Model model) {
-
-        Optional<Task> optionalTask = taskRepository.findById(id);
-        if (optionalTask.isPresent()) {
-            Task existingTask = optionalTask.get();
-            existingTask.setTaskName(task.getTaskName());
-            existingTask.setTaskDescription(task.getTaskDescription());
-            existingTask.setCreatedOn(task.getCreatedOn());
-            taskRepository.save(existingTask);
-            model.addAttribute("task", existingTask);
+    public String editTask(@Valid Task task, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return "editTask";
         }
-        return "editTask";
+        taskRepository.save(task);
+
+        return "redirect:/tasks/all";
     }
 
-    @GetMapping("delete/{id}")
+    @PostMapping("delete/{id}")
     public String deleteTask(@PathVariable Long id){
         taskRepository.deleteById(id);
-        return "redirect:tasks/all";
+        return "redirect:/tasks/all";
     }
 
     @GetMapping("/show/{id}")
     public String showTask(@PathVariable Long id, Model model) {
 
-        Optional<Task> task = taskRepository.findById(id);
-        model.addAttribute(task.get());
-        return "showTask";
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        if(optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            model.addAttribute("task" , task);
+        } return "showTask";
     }
 
     @GetMapping("/all")
@@ -80,10 +77,11 @@ public class TaskController {
         return "allTasks";
     }
 
-    @ModelAttribute
+    @ModelAttribute("tasks")
     public List<Task> getAll(){
        return taskRepository.findAll();
     }
+
 
     @ModelAttribute("categories")
     public List<Category> getAllCategories(){
