@@ -34,17 +34,13 @@
 
                     <td class="px-4 py-3"><c:out value="${userTask.task.taskName}"/></td>
                     <td class="px-4 py-3"><c:out value="${userTask.task.taskDescription}"/></td>
+
                     <td><c:out value="${userTask.done}"/></td>
-<%--                    <td><form:checkbox path="isDone"/></td>--%>
-                    <td class="px-4 py-3">
-                        <input type="checkbox" name="userTasks[${status.index}].done"
-                               value="true" ${userTask.done ? 'checked="checked"' : ''}/>
-                        <input type="hidden" name="userTasks[${status.index}].done" value="false"/>
-                    </td>
+
                     <td class="px-4 py-3"><a href="${pageContext.request.contextPath}/comments">Add comment</a>
                     </td>
                     <td class="px-4 py-3">
-                        <form:form action="/tasks/show/${task.id}" method="get" cssStyle="display:inline;">
+                        <form:form action="/assignTask/show/${task.id}" method="get" cssStyle="display:inline;">
                             <input type="submit" value="Show task details"/>
                         </form:form>
                     </td>
