@@ -3,12 +3,11 @@ package pl.coderslab.comment;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import pl.coderslab.user_task_comment.UserTaskComment;
+import pl.coderslab.user.User;
+import pl.coderslab.user_task.UserTask;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -23,8 +22,9 @@ public class Comment implements Serializable {
 
     private String comment;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private List<UserTaskComment> userTaskComments = new ArrayList<>();
+    @ManyToOne
+    private UserTask userTask;
 
+    @ManyToOne
+    private User user;
 }

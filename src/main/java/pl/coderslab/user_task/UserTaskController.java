@@ -4,7 +4,10 @@ import org.springframework.stereotype.Controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.comment.Comment;
+import pl.coderslab.comment.CommentRepository;
 import pl.coderslab.task.Task;
 import pl.coderslab.task.TaskRepository;
 import pl.coderslab.user.User;
@@ -22,6 +25,7 @@ public class UserTaskController {
     private final UserTaskRepository userTaskRepository;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @GetMapping
     public String showAssignTaskForm(Model model){
@@ -55,7 +59,6 @@ public class UserTaskController {
             if (optionalTask.isEmpty()) {
                 log.warn("Task with ID {} not found", taskId);
             }
-
             return "assigningTaskError";
         }
 
@@ -69,28 +72,39 @@ public class UserTaskController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editUserTask(@PathVariable Long id, Model model){
-        Optional<UserTask> optionalUserTask = userTaskRepository.findById(id);
-        if(optionalUserTask.isPresent()){
-            UserTask updatedUserTask = optionalUserTask.get();
-            userTaskRepository.save(updatedUserTask);
-
-            model.addAttribute("userTask", updatedUserTask);
-            log.info("task {} assigned to user {} updated", updatedUserTask, updatedUserTask.getUser());
+    public String editUserTask(@PathVariable Long id, @ModelAttribute UserTask userTask, BindingResult result, Model model){
+        if(result.hasErrors()) {
+            return "editUserTask";
         }
-        return "editUserTask";
+        userTask.setId(id);
+        userTaskRepository.save(userTask);
+
+        log.info("UserTask {} updated", userTask);
+        return "redirect:/assignTask/all";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteFromUserTasks(UserTask userTask){
-        userTaskRepository.deleteById(userTask.getId());
+    @PostMapping("/delete/{id}")
+    public String deleteFromUserTasks(@PathVariable Long id){
+        userTaskRepository.deleteById(id);
+        log.info("Deleted UserTask with id {}", id);
+        return "redirect:/assignTask/all";
     }
 
     @GetMapping("/all")
-    public String allUserTasks(){
+    public String allUserTasks(Model model){
+
+        model.addAttribute("userTasks", userTaskRepository.findAll());
+
         return "allUserTasks";
     }
-
+    @GetMapping("/show/{id}")
+    public String showUserTask(@PathVariable Long id, Model model){
+        Optional <UserTask> optionalUserTask = userTaskRepository.findById(id);
+        if(optionalUserTask.isPresent()){
+            model.addAttribute("userTask", optionalUserTask.get());
+        }
+        return "editUserTask";
+    }
     @ModelAttribute("userTasks")
     public List <UserTask> getUserTasks(){
         return userTaskRepository.findAll();
@@ -99,5 +113,10 @@ public class UserTaskController {
     @ModelAttribute("users")
     public List<User> getUsers(){
         return userRepository.findAll();
+    }
+
+    @ModelAttribute("comments")
+    public List<Comment> getAllComments(){
+        return commentRepository.findAll();
     }
 }
