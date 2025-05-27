@@ -7,6 +7,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.category.Category;
 import pl.coderslab.category.CategoryRepository;
+import pl.coderslab.user_task.UserTask;
+import pl.coderslab.user_task.UserTaskRepository;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -19,11 +21,12 @@ public class TaskController {
 
     private final TaskRepository taskRepository;
     private final CategoryRepository categoryRepository;
+    private final UserTaskRepository userTaskRepository;
 
     @GetMapping
     public String showAddTask(Model model) {
         model.addAttribute("task", new Task());
-        model.addAttribute("category", categoryRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findAll());
         return "addTask";
     }
 
@@ -41,8 +44,10 @@ public class TaskController {
         Optional<Task> optionalTask = taskRepository.findById(id);
         if (optionalTask.isPresent()) {
             model.addAttribute("task", optionalTask.get());
+            return "editTask";
         }
-        return "editTask";
+        return "redirect:/tasks/all";
+
     }
 
     @PostMapping("/edit/{id}")
@@ -55,20 +60,23 @@ public class TaskController {
         return "redirect:/tasks/all";
     }
 
-    @PostMapping("delete/{id}")
-    public String deleteTask(@PathVariable Long id){
+    @GetMapping("/delete/{id}")
+    public String deleteTask(@PathVariable Long id) {
         taskRepository.deleteById(id);
         return "redirect:/tasks/all";
     }
+
 
     @GetMapping("/show/{id}")
     public String showTask(@PathVariable Long id, Model model) {
 
         Optional<Task> optionalTask = taskRepository.findById(id);
-        if(optionalTask.isPresent()) {
-            Task task = optionalTask.get();
-            model.addAttribute("task" , task);
-        } return "showTask";
+        if (optionalTask.isPresent()) {
+            model.addAttribute("task", optionalTask.get());
+            return "editTask";
+        }
+        return "redirect:/tasks/all";
+
     }
 
     @GetMapping("/all")
@@ -87,4 +95,10 @@ public class TaskController {
     public List<Category> getAllCategories(){
         return categoryRepository.findAll();
     }
+
+    @ModelAttribute("toDoTasks")
+    public List <UserTask> getTasksToDo() {
+        return userTaskRepository.findByDoneIsFalse();
+        }
+
 }
