@@ -1,5 +1,7 @@
 package pl.coderslab.user;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,13 +19,18 @@ import java.util.List;
 @ToString
 @Table(name = "users")
 public class User implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
+    @Size(min = 3, max = 20)
     private String name;
     private String role;
 
+    @Email
+    private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude
