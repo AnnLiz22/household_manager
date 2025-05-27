@@ -8,6 +8,7 @@ import pl.coderslab.category.Category;
 import pl.coderslab.user_task.UserTask;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String taskName;
 
     private String taskDescription;
