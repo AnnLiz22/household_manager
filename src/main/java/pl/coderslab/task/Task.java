@@ -1,5 +1,6 @@
 package pl.coderslab.task;
 
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -26,11 +27,13 @@ public class Task implements Serializable {
     private Long id;
 
     @NotNull
+    @Size(min = 3, max = 20)
     private String taskName;
 
     private String taskDescription;
 
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     private LocalDateTime createdOn;

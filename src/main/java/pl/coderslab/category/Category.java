@@ -22,7 +22,8 @@ public class Category implements Serializable {
 
     private String category;
 
-    @OneToMany(mappedBy = "category")
-    private List<Task> task;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks;
 
 }
