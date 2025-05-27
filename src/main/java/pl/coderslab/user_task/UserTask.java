@@ -1,16 +1,16 @@
 package pl.coderslab.user_task;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import pl.coderslab.comment.Comment;
 import pl.coderslab.task.Task;
 import pl.coderslab.user.User;
-import pl.coderslab.user_task_comment.UserTaskComment;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +33,7 @@ public class UserTask implements Serializable {
 
     @OneToMany(mappedBy = "userTask", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<UserTaskComment> userTaskComments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
+
 
 }
