@@ -30,7 +30,8 @@ public class Task implements Serializable {
 
     private String taskDescription;
 
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     private LocalDateTime createdOn;
