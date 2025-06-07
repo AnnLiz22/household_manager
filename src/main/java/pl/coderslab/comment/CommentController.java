@@ -1,5 +1,6 @@
 package pl.coderslab.comment;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,7 @@ public class CommentController {
     }
 
     @PostMapping("/add")
-    public String addComment(@ModelAttribute Comment comment, BindingResult bindingResult, Model model) {
+    public String addComment(@Valid @ModelAttribute Comment comment, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("users", userRepository.findAll());
             model.addAttribute("userTasks", userTaskRepository.findAll());
