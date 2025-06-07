@@ -22,101 +22,85 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserTaskController {
 
-    private final UserTaskRepository userTaskRepository;
-    private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
+  private final UserTaskRepository userTaskRepository;
+  private final TaskRepository taskRepository;
+  private final UserRepository userRepository;
+  private final CommentRepository commentRepository;
 
-    @GetMapping
-    public String showAssignTaskForm(Model model){
-        model.addAttribute("userTask", new UserTask());
-        model.addAttribute("users", userRepository.findAll());
-        model.addAttribute("tasks", taskRepository.findAll());
-        return "assignTaskToUser";
-    }
+  @GetMapping
+  public String showAssignTaskForm(Model model) {
+    model.addAttribute("userTask", new UserTask());
+    model.addAttribute("users", userRepository.findAll());
+    model.addAttribute("tasks", taskRepository.findAll());
+    return "assignTaskToUser";
+  }
 
-    @PostMapping
-    public String assignTask(@RequestParam Long taskId, @RequestParam Long userId, @ModelAttribute UserTask userTask, Model model){
+  @PostMapping
+  public String assignTask(@ModelAttribute UserTask userTask, Model model) {
 
-        Optional <User> optionalUser = userRepository.findById(userId);
-        Optional <Task> optionalTask = taskRepository.findById(taskId);
-
-        if(optionalUser.isPresent()&& optionalTask.isPresent() && userTask.getId()==null){
-            User user = optionalUser.get();
-            Task task = optionalTask.get();
-            userTask.setUser(user);
-            userTask.setTask(task);
-
-            userTaskRepository.save(userTask);
-
-            model.addAttribute("userTask", userTask);
-            log.info("task {} assigned to user {}", task, user);
-
-        } else {
-            if (optionalUser.isEmpty()) {
-                log.warn("User with ID {} not found", userId);
-            }
-            if (optionalTask.isEmpty()) {
-                log.warn("Task with ID {} not found", taskId);
-            }
-            return "assigningTaskError";
-        }
-
-        return "redirect:/assignTask/all";
-    }
+      if (userTask.getUser() == null || userTask.getTask() == null) {
+          return "assigningTaskError";
+      }
+      userTaskRepository.save(userTask);
+      log.info("Assigned task {} to user {}", userTask.getTask(), userTask.getUser());
+      return "redirect:/assignTask/all";
+  }
 
     @GetMapping("/edit/{id}")
     public String showEditUserTask(@PathVariable Long id, Model model){
-        model.addAttribute("task", userTaskRepository.findById(id));
+        Optional<UserTask> userTask = userTaskRepository.findById(id);
+        userTask.ifPresent(ut -> model.addAttribute("userTask", ut));
         return "editUserTask";
     }
 
     @PostMapping("/edit/{id}")
-    public String editUserTask(@PathVariable Long id, @ModelAttribute UserTask userTask, BindingResult result, Model model){
-        if(result.hasErrors()) {
-            return "editUserTask";
-        }
-        userTask.setId(id);
-        userTaskRepository.save(userTask);
-
-        log.info("UserTask {} updated", userTask);
-        return "redirect:/assignTask/all";
+  public String editUserTask(@PathVariable Long id, @ModelAttribute UserTask userTask, BindingResult result, Model model) {
+    if (result.hasErrors()) {
+      return "editUserTask";
     }
+    userTask.setId(id);
+    userTaskRepository.save(userTask);
 
-    @PostMapping("/delete/{id}")
-    public String deleteFromUserTasks(@PathVariable Long id){
-        userTaskRepository.deleteById(id);
-        log.info("Deleted UserTask with id {}", id);
-        return "redirect:/assignTask/all";
-    }
+    log.info("UserTask {} updated", userTask);
+    return "redirect:/assignTask/all";
+  }
 
-    @GetMapping("/all")
-    public String allUserTasks(Model model){
+  @PostMapping("/delete/{id}")
+  public String deleteFromUserTasks(@PathVariable Long id) {
+    userTaskRepository.deleteById(id);
+    log.info("Deleted UserTask with id {}", id);
+    return "redirect:/assignTask/all";
+  }
 
-        model.addAttribute("userTasks", userTaskRepository.findAll());
+  @GetMapping("/all")
+  public String allUserTasks(Model model) {
 
-        return "allUserTasks";
-    }
-    @GetMapping("/show/{id}")
-    public String showUserTask(@PathVariable Long id, Model model){
-        Optional <UserTask> optionalUserTask = userTaskRepository.findById(id);
-        if(optionalUserTask.isPresent()){
-            model.addAttribute("userTask", optionalUserTask.get());
-        }
-        return "editUserTask";
-    }
-    @ModelAttribute("userTasks")
-    public List <UserTask> getUserTasks(){
-        return userTaskRepository.findAll();
-    }
+    model.addAttribute("userTasks", userTaskRepository.findAll());
 
-    @ModelAttribute("users")
-    public List<User> getUsers(){
-        return userRepository.findAll();
-    }
+    return "allUserTasks";
+  }
 
-    @ModelAttribute("comments")
-    public List<Comment> getAllComments(){
-        return commentRepository.findAll();
+  @GetMapping("/show/{id}")
+  public String showUserTask(@PathVariable Long id, Model model) {
+    Optional<UserTask> optionalUserTask = userTaskRepository.findById(id);
+    if (optionalUserTask.isPresent()) {
+      model.addAttribute("userTask", optionalUserTask.get());
     }
+    return "editUserTask";
+  }
+
+  @ModelAttribute("userTasks")
+  public List<UserTask> getUserTasks() {
+    return userTaskRepository.findAll();
+  }
+
+  @ModelAttribute("users")
+  public List<User> getUsers() {
+    return userRepository.findAll();
+  }
+
+  @ModelAttribute("comments")
+  public List<Comment> getAllComments() {
+    return commentRepository.findAll();
+  }
 }

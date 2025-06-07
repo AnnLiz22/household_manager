@@ -17,24 +17,24 @@
     <h3>Assign task to user:</h3>
     <div class="px-4 py-3 bg-light rounded-2">
         <form:form action="${pageContext.request.contextPath}/assignTask" modelAttribute="userTask" method="post">
-            <label for="user">User:</label>
-            <select id="user" name="userId">
-                <c:forEach var="user" items="${users}">
-                    <option value="${user.id}">${user.name}</option>
-                </c:forEach>
-            </select>
-            <br/><br>
 
-            <label for="task">Task:</label>
-            <select id="task" name="taskId">
-                <c:forEach var="task" items="${tasks}">
-                    <option value="${task.id}">${task.taskName}</option>
-                </c:forEach>
-            </select>
-            <br/><br>
+            <div class="mb-3">
+                <label for="user">User:</label>
+                <form:select path="user.id" id="user" cssClass="form-select">
+                    <form:options items="${users}" itemValue="id" itemLabel="name"/>
+                </form:select>
+            </div>
 
-            <input type="submit" value="Assign Task"/>
+            <div class="mb-3">
+                <label for="task">Task:</label>
+                <form:select path="task.id" id="task" cssClass="form-select">
+                    <form:options items="${tasks}" itemValue="id" itemLabel="taskName"/>
+                </form:select>
+            </div>
+
+            <input type="submit" value="Assign Task" class="btn btn-primary"/>
         </form:form>
+
     </div>
 </div>
 </body>
