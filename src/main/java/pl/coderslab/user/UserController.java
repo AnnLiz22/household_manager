@@ -48,18 +48,19 @@ public class UserController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editUserForm(@Valid User user) {
-
+    public String editUserForm(@Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "editUser";
+        }
         userRepository.save(user);
         log.info("user {} updated", user);
-        return "editUser";
+        return "redirect:/users/all";
     }
 
-    @PostMapping("/delete")
-    public String deleteUser(User user) {
-        userRepository.deleteById(user.getId());
-
-        return "redirect:users/all";
+    @PostMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
+        return "redirect:/users/all";
     }
 
     @GetMapping("/all")
