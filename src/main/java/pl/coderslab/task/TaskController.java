@@ -73,7 +73,7 @@ public class TaskController {
         Optional<Task> optionalTask = taskRepository.findById(id);
         if (optionalTask.isPresent()) {
             model.addAttribute("task", optionalTask.get());
-            return "editTask";
+            return "showTask";
         }
         return "redirect:/tasks/all";
 
