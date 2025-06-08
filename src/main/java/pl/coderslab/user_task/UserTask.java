@@ -2,6 +2,7 @@ package pl.coderslab.user_task;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,9 +25,11 @@ public class UserTask implements Serializable {
     Long id;
 
     @ManyToOne
+    @NotNull
     private User user;
 
     @ManyToOne
+    @NotNull
     private Task task;
 
     private boolean isDone;
