@@ -90,6 +90,11 @@ public class UserTaskController {
     return userRepository.findAll();
   }
 
+  @ModelAttribute("tasks")
+  public List<Task> getTasks() {
+    return taskRepository.findAll();
+  }
+
   @ModelAttribute("comments")
   public List<Comment> getAllComments() {
     return commentRepository.findAll();
