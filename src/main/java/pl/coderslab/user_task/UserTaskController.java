@@ -1,5 +1,6 @@
 package pl.coderslab.user_task;
 
+import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,30 +37,58 @@ public class UserTaskController {
   }
 
   @PostMapping
-  public String assignTask(@ModelAttribute UserTask userTask, Model model) {
-
-      if (userTask.getUser() == null || userTask.getTask() == null) {
-          return "assigningTaskError";
-      }
+  public String assignTask(@Valid @ModelAttribute UserTask userTask, BindingResult result, Model model) {
+    if (result.hasErrors() || userTask.getUser() == null || userTask.getTask() == null) {
+      return "assignTaskToUser";
+    }
       userTaskRepository.save(userTask);
       log.info("Assigned task {} to user {}", userTask.getTask(), userTask.getUser());
       return "redirect:/assignTask/all";
   }
 
-    @GetMapping("/edit/{id}")
-    public String showEditUserTask(@PathVariable Long id, Model model){
-        Optional<UserTask> userTask = userTaskRepository.findById(id);
-        userTask.ifPresent(ut -> model.addAttribute("userTask", ut));
-        return "editUserTask";
-    }
-
-    @PostMapping("/edit/{id}")
-  public String editUserTask(@PathVariable Long id, @ModelAttribute UserTask userTask, BindingResult result, Model model) {
-    if (result.hasErrors()) {
+  @GetMapping("/edit/{id}")
+  public String showEditUserTask(@PathVariable Long id, Model model){
+    Optional<UserTask> userTaskOpt = userTaskRepository.findById(id);
+    if (userTaskOpt.isPresent()) {
+      UserTask userTask = userTaskOpt.get();
+      model.addAttribute("userTask", userTask);
+      model.addAttribute("newComment", new Comment());
+      model.addAttribute("comments", commentRepository.findAllByUserTaskId(id));
       return "editUserTask";
     }
-    userTask.setId(id);
-    userTaskRepository.save(userTask);
+    return "redirect:/assignTask/all";
+  }
+
+  @PostMapping("/edit/{id}")
+  public String editUserTask(@PathVariable Long id, @ModelAttribute UserTask userTask, BindingResult result, Model model) {
+      if (result.hasErrors()) {
+        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("tasks", taskRepository.findAll());
+        return "editUserTask";
+      }
+
+      Optional<User> optionalUser = userRepository.findById(userTask.getUser().getId());
+      Optional<Task> optionalTask = taskRepository.findById(userTask.getTask().getId());
+
+      if (optionalUser.isEmpty() || optionalTask.isEmpty()) {
+        if (optionalUser.isEmpty()) {
+          log.warn("User with ID {} not found during edit", userTask.getUser().getId());
+        }
+        if (optionalTask.isEmpty()) {
+          log.warn("Task with ID {} not found during edit", userTask.getTask().getId());
+        }
+
+        model.addAttribute("editError", "Invalid user or task selected.");
+        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("tasks", taskRepository.findAll());
+        return "editUserTask";
+      }
+
+      userTask.setId(id);
+      userTask.setUser(optionalUser.get());
+      userTask.setTask(optionalTask.get());
+
+      userTaskRepository.save(userTask);
 
     log.info("UserTask {} updated", userTask);
     return "redirect:/assignTask/all";
@@ -80,15 +109,6 @@ public class UserTaskController {
     return "allUserTasks";
   }
 
-  @GetMapping("/show/{id}")
-  public String showUserTask(@PathVariable Long id, Model model) {
-    Optional<UserTask> optionalUserTask = userTaskRepository.findById(id);
-    if (optionalUserTask.isPresent()) {
-      model.addAttribute("userTask", optionalUserTask.get());
-    }
-    return "editUserTask";
-  }
-
   @ModelAttribute("userTasks")
   public List<UserTask> getUserTasks() {
     return userTaskRepository.findAll();
@@ -97,6 +117,11 @@ public class UserTaskController {
   @ModelAttribute("users")
   public List<User> getUsers() {
     return userRepository.findAll();
+  }
+
+  @ModelAttribute("tasks")
+  public List<Task> getTasks() {
+    return taskRepository.findAll();
   }
 
   @ModelAttribute("comments")
