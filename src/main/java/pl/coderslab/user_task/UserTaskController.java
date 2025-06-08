@@ -55,11 +55,34 @@ public class UserTaskController {
 
     @PostMapping("/edit/{id}")
   public String editUserTask(@PathVariable Long id, @ModelAttribute UserTask userTask, BindingResult result, Model model) {
-    if (result.hasErrors()) {
-      return "editUserTask";
-    }
-    userTask.setId(id);
-    userTaskRepository.save(userTask);
+      if (result.hasErrors()) {
+        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("tasks", taskRepository.findAll());
+        return "editUserTask";
+      }
+
+      Optional<User> optionalUser = userRepository.findById(userTask.getUser().getId());
+      Optional<Task> optionalTask = taskRepository.findById(userTask.getTask().getId());
+
+      if (optionalUser.isEmpty() || optionalTask.isEmpty()) {
+        if (optionalUser.isEmpty()) {
+          log.warn("User with ID {} not found during edit", userTask.getUser().getId());
+        }
+        if (optionalTask.isEmpty()) {
+          log.warn("Task with ID {} not found during edit", userTask.getTask().getId());
+        }
+
+        model.addAttribute("editError", "Invalid user or task selected.");
+        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("tasks", taskRepository.findAll());
+        return "editUserTask";
+      }
+
+      userTask.setId(id);
+      userTask.setUser(optionalUser.get());
+      userTask.setTask(optionalTask.get());
+
+      userTaskRepository.save(userTask);
 
     log.info("UserTask {} updated", userTask);
     return "redirect:/assignTask/all";
