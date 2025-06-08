@@ -31,6 +31,18 @@
         </form:form>
 
     </div>
+
+    <h4>Add Comment:</h4>
+    <form:form method="post" action="${pageContext.request.contextPath}/comments/addToTask/${userTask.id}" modelAttribute="newComment">
+        <div class="mb-3">
+            <label for="comment">Comment:</label>
+            <form:textarea path="comment" id="comment" cssClass="form-control"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Comment</button>
+    </form:form>
+
+
+
 </div>
 
 </body>
