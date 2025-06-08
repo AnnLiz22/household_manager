@@ -1,5 +1,6 @@
 package pl.coderslab.user_task;
 
+import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +37,10 @@ public class UserTaskController {
   }
 
   @PostMapping
-  public String assignTask(@ModelAttribute UserTask userTask, Model model) {
-
-      if (userTask.getUser() == null || userTask.getTask() == null) {
-          return "assigningTaskError";
-      }
+  public String assignTask(@Valid @ModelAttribute UserTask userTask, BindingResult result, Model model) {
+    if (result.hasErrors() || userTask.getUser() == null || userTask.getTask() == null) {
+      return "assignTaskToUser";
+    }
       userTaskRepository.save(userTask);
       log.info("Assigned task {} to user {}", userTask.getTask(), userTask.getUser());
       return "redirect:/assignTask/all";
