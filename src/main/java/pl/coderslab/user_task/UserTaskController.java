@@ -80,15 +80,6 @@ public class UserTaskController {
     return "allUserTasks";
   }
 
-  @GetMapping("/show/{id}")
-  public String showUserTask(@PathVariable Long id, Model model) {
-    Optional<UserTask> optionalUserTask = userTaskRepository.findById(id);
-    if (optionalUserTask.isPresent()) {
-      model.addAttribute("userTask", optionalUserTask.get());
-    }
-    return "editUserTask";
-  }
-
   @ModelAttribute("userTasks")
   public List<UserTask> getUserTasks() {
     return userTaskRepository.findAll();
