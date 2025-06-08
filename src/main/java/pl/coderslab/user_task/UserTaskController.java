@@ -46,14 +46,20 @@ public class UserTaskController {
       return "redirect:/assignTask/all";
   }
 
-    @GetMapping("/edit/{id}")
-    public String showEditUserTask(@PathVariable Long id, Model model){
-        Optional<UserTask> userTask = userTaskRepository.findById(id);
-        userTask.ifPresent(ut -> model.addAttribute("userTask", ut));
-        return "editUserTask";
+  @GetMapping("/edit/{id}")
+  public String showEditUserTask(@PathVariable Long id, Model model){
+    Optional<UserTask> userTaskOpt = userTaskRepository.findById(id);
+    if (userTaskOpt.isPresent()) {
+      UserTask userTask = userTaskOpt.get();
+      model.addAttribute("userTask", userTask);
+      model.addAttribute("newComment", new Comment());
+      model.addAttribute("comments", commentRepository.findAllByUserTaskId(id));
+      return "editUserTask";
     }
+    return "redirect:/assignTask/all";
+  }
 
-    @PostMapping("/edit/{id}")
+  @PostMapping("/edit/{id}")
   public String editUserTask(@PathVariable Long id, @ModelAttribute UserTask userTask, BindingResult result, Model model) {
       if (result.hasErrors()) {
         model.addAttribute("users", userRepository.findAll());
